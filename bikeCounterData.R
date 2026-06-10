@@ -141,19 +141,145 @@ plot_hourly_cyclists_hm(hrly_jsb, title = "Johnson Street Bridge", fill_limits =
 plot_hourly_cyclists_hm(hrly_slk, title = "Selkirk North end of Bridge", fill_limits = c(0,700))
 
 #focus on the closure period Nov-01 to Mar-31
-bld_jsb$month <- month(bld_jsb$datetime)
-bld_slk$month <- month(bld_slk$datetime)
-
-all_daily_data <- rbind(bld_jsb, bld_slk)
-
-all_daily_data$year <- year(all_daily_data$datetime)
-
-all_daily_data <- all_daily_data %>% filter(month %in% c('11','12','1','2','3'))
-
-all_daily_data %>% group_by(year, station_id) %>% summarize(total_cyc = sum(count)) %>%
-  ggplot(aes(x = year, y = total_cyc, fill = station_id))+
-  geom_col(position = "dodge")
+summarise_winter_periods <- function(df, period_start_month = 11, period_start_day = 15,
+                                     period_end_month = 3,   period_end_day = 15,
+                                     title = "Total Cyclists by Winter Period",
+                                     bar_color = "steelblue") {
   
+  years     <- unique(year(df$date_only))
+  min_year  <- min(years)
+  max_year  <- max(years)
+  
+  periods <- do.call(rbind, lapply(min_year:(max_year - 1), function(yr) {
+    tibble(
+      period_label = paste0(yr, "/", substr(yr + 1, 3, 4)),
+      start        = as.Date(paste(yr,     period_start_month, period_start_day, sep = "-")),
+      end          = as.Date(paste(yr + 1, period_end_month,   period_end_day,   sep = "-"))
+    )
+  }))
+  
+  data_start <- min(df$date_only)
+  data_end   <- max(df$date_only)
+  
+  periods <- periods %>%
+    filter(end >= data_start & start <= data_end)
+  
+  results <- do.call(rbind, lapply(1:nrow(periods), function(i) {
+    df %>%
+      filter(date_only >= periods$start[i] & date_only <= periods$end[i]) %>%
+      summarise(total_cyclists = sum(count, na.rm = TRUE)) %>%
+      mutate(period = periods$period_label[i],
+             start  = periods$start[i],
+             end    = periods$end[i])
+  }))
+  
+  # Flag incomplete periods where data doesn't cover the full window
+  results <- results %>%
+    mutate(complete = start >= data_start & end <= data_end)
+  
+  p <- ggplot(results, aes(x = period, y = total_cyclists, fill = complete)) +
+    geom_col() +
+    geom_text(aes(label = scales::comma(total_cyclists)), 
+              vjust = -0.5, size = 3.5) +
+    scale_fill_manual(values = c("TRUE" = bar_color, "FALSE" = "grey70"),
+                      labels = c("TRUE" = "Complete", "FALSE" = "Incomplete"),
+                      name   = "") +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.1)),
+                       labels = scales::comma) +
+    ggtitle(title) +
+    labs(x = "", y = "Total Cyclists") +
+    theme_bw() +
+    theme(
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor   = element_blank(),
+      plot.title         = element_text(face = "bold"),
+      legend.position    = "bottom"
+    )
+  
+  print(p)
+  return(invisible(results))
+}
+
+#shows the raw numbers
+summarise_winter_periods(bld_jsb, title = "Total Winter Cyclists at JSB")
+summarise_winter_periods(bld_slk, title = "Total Winter Cyclists at SLK")
+
+#shows relative change year over year
+summarise_winter_periods_yoy <- function(df, period_start_month = 11, period_start_day = 15,
+                                         period_end_month = 3,   period_end_day = 15,
+                                         title = "Year-over-Year Change in Winter Cyclists",
+                                         bar_color = "steelblue") {
+  
+  years    <- unique(year(df$date_only))
+  min_year <- min(years)
+  max_year <- max(years)
+  
+  periods <- do.call(rbind, lapply(min_year:(max_year - 1), function(yr) {
+    tibble(
+      period_label = paste0(yr, "/", substr(yr + 1, 3, 4)),
+      start        = as.Date(paste(yr,     period_start_month, period_start_day, sep = "-")),
+      end          = as.Date(paste(yr + 1, period_end_month,   period_end_day,   sep = "-"))
+    )
+  }))
+  
+  data_start <- min(df$date_only)
+  data_end   <- max(df$date_only)
+  
+  periods <- periods %>%
+    filter(end >= data_start & start <= data_end)
+  
+  results <- do.call(rbind, lapply(1:nrow(periods), function(i) {
+    df %>%
+      filter(date_only >= periods$start[i] & date_only <= periods$end[i]) %>%
+      summarise(total_cyclists = sum(count, na.rm = TRUE)) %>%
+      mutate(period   = periods$period_label[i],
+             start    = periods$start[i],
+             end      = periods$end[i],
+             complete = periods$start[i] >= data_start & periods$end[i] <= data_end)
+  }))
+  
+  # Calculate percent change vs previous period
+  results <- results %>%
+    mutate(
+      pct_change = (total_cyclists - lag(total_cyclists)) / lag(total_cyclists) * 100,
+      direction  = case_when(
+        is.na(pct_change)  ~ "baseline",
+        pct_change >= 0    ~ "increase",
+        TRUE               ~ "decrease"
+      )
+    )
+  
+  # Drop the first period since it has no baseline to compare against
+  plot_data <- results %>% filter(!is.na(pct_change))
+  
+  p <- ggplot(plot_data, aes(x = period, y = pct_change, fill = direction)) +
+    geom_col() +
+    geom_hline(yintercept = 0, linewidth = 0.5, color = "grey30") +
+    geom_text(aes(label = paste0(ifelse(pct_change > 0, "+", ""), round(pct_change, 1), "%")),
+              vjust = ifelse(plot_data$pct_change >= 0, -0.5, 1.5), size = 3.5) +
+    scale_fill_manual(values = c("increase" = "#2ecc71", "decrease" = "#e74c3c")) +
+    scale_y_continuous(labels = function(x) paste0(x, "%"),
+                       expand = expansion(mult = c(0.15, 0.15))) +
+    ggtitle(title) +
+    labs(x = "", y = "Year-over-Year Change",
+         caption = paste0("Baseline: ", results$period[1], " (", scales::comma(results$total_cyclists[1]), " cyclists)")) +
+    theme_bw() +
+    theme(
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor   = element_blank(),
+      plot.title         = element_text(face = "bold"),
+      legend.position    = "none"
+    )
+  
+  print(p)
+  return(invisible(results))
+}
+
+
+summarise_winter_periods_yoy(bld_jsb, title = "Year-over-Year Change in Winter Cyclists at JSB")
+summarise_winter_periods_yoy(bld_slk, title = "Year-over-Year Change in Winter Cyclists at SLK")
+
+
 ######
 plot_flow_id_availability <- function(base_id, start_date, end_date, interval = 4) {
   
