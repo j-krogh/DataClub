@@ -34,6 +34,18 @@ get_bike_count_data <- function(stn_location, start_date, end_date, flow_id, int
   #build the url
   url <- paste0("https://www.eco-visio.net/api/aladdin/1.0.0/pbl/publicwebpageplus/data/", stn_location)
   
+  
+  flowIdsSelect = generate_id_list(stn_location) #JSB
+  
+  if (stn_location == '100057501') {
+    flowIdsSelect = '105057501;106057501' #SLK
+  }
+  
+  if (stn_location == '100057507') {
+    flowIdsSelect = '103057507;104057507' #E and N
+  }
+  
+  
   #build the query parameters
   params <- list(
     idOrganisme = "4828",
@@ -41,7 +53,7 @@ get_bike_count_data <- function(stn_location, start_date, end_date, flow_id, int
     fin = format(end_date, "%d/%m/%Y"),
     debut = format(start_date, "%d/%m/%Y"),
     interval = interval, #3 is hourly data 4 is daily 5 is weekly
-    flowIds = generate_id_list(stn_location), #direction
+    flowIds = flowIdsSelect, #direction
     flowmode=2 #bikes
   )
   
@@ -80,7 +92,7 @@ plot_hourly_cyclists_hm <- function(df, title = "Hourly Cyclists", fill_limits =
     scale_y_continuous(expand = c(0, 0)) +
     scale_fill_continuous(limits = fill_limits, type = "viridis") +
     ggtitle(title) +
-    labs(x = "", y = "Hour of the Day", fill = "Cyclists per Hour") +
+    labs(x = "", y = "Hour of the Day", fill = "Cyclists per Hour", caption = "@jeremy77.bsky.social") +
     theme_bw()
   
   return(p)
@@ -111,34 +123,44 @@ data_int = "4" #3 is hourly, 4 is daily
 
 bld_jsb <- get_bike_count_data('100059041', start_date, end_date, interval = data_int)
 bld_slk <- get_bike_count_data('100057501', start_date, end_date, interval = data_int)
+bld_en <- get_bike_count_data('100057507', start_date, end_date, interval = data_int)
 
 #Daily plots with a smooth line
-jsb_daily <- plot_daily_cyslists_ts(bld_jsb, title = "Daily Cyclists at JSB", y_limits = c(0,6000))
-slk_daily <- plot_daily_cyslists_ts(bld_slk, title = "Daily Cyclists at SLK", y_limits = c(0,6000))
+jsb_daily <- plot_daily_cyslists_ts(bld_jsb, title = "Johnson St. Bridge", y_limits = c(0,5000))
+slk_daily <- plot_daily_cyslists_ts(bld_slk, title = "Selkirk Trestle North End", y_limits = c(0,5000))
+en_daily <- plot_daily_cyslists_ts(bld_en, title = "E&N at Hereward Rd.", y_limits = c(0,2000))
 
 #JSB matches the website but SLK is a little high, like 5% too high weird. Porbably something
 #to do with the flow ids
 
 #Make a nice cowplot for both stations
 combined <- plot_grid(
-  slk_daily, jsb_daily,
+
+    slk_daily, jsb_daily, en_daily,
   ncol  = 1,       # stack vertically
   align = "v",     # align vertical axes
   rel_heights = c(1, 1)  # equal height, adjust if needed
 )
 
 title <- ggdraw() +
-  draw_label("Daily Cyclists", fontface = "bold", x = 0, hjust = 0) +
-  theme(plot.margin = margin(0, 0, 0, 10))
+  draw_label("Galloping Goose and E&N Regional Trails", fontface = "bold", x = 0, hjust = 0) +
+  theme(plot.margin = margin(0, 0, 0, 10)) +
+  labs(caption = "@jeremy77.bsky.social")
 
-plot_grid(title, combined, ncol = 1, rel_heights = c(0.05, 1))
+plot_grid(title, combined, ncol = 1, rel_heights = c(0.05, 1), ggdraw() + draw_label("@jeremy77.bsky.social", x = 1, hjust = 1, size = 8))
 
 #again for hourly data
 hrly_jsb <- get_bike_count_data('100059041', start_date, end_date, interval = "3")
 hrly_slk <- get_bike_count_data('100057501', start_date, end_date, interval = "3")
+hrly_en <- get_bike_count_data('100057507', start_date, end_date, interval = "3")
 
-plot_hourly_cyclists_hm(hrly_jsb, title = "Johnson Street Bridge", fill_limits = c(0,700))
-plot_hourly_cyclists_hm(hrly_slk, title = "Selkirk North end of Bridge", fill_limits = c(0,700))
+plot_hourly_cyclists_hm(hrly_jsb, title = "Johnson Street Bridge", fill_limits = c(0,600))
+plot_hourly_cyclists_hm(hrly_slk, title = "Selkirk North end of Trestle", fill_limits = c(0,600))
+plot_hourly_cyclists_hm(hrly_en, title = "E&N at Hereward Rd.", fill_limits = c(0,200))
+
+#show a short period to see the weekly pattern
+plot_hourly_cyclists_hm(hrly_slk %>% filter(between(date_only, as.Date('2026-05-02'), as.Date('2026-05-31'))),
+                        title = "Hourly Cyclists at Selkirk Trestle May 2026")
 
 #focus on the closure period Nov-01 to Mar-31
 summarise_winter_periods <- function(df, period_start_month = 11, period_start_day = 15,
@@ -201,8 +223,9 @@ summarise_winter_periods <- function(df, period_start_month = 11, period_start_d
 }
 
 #shows the raw numbers
-summarise_winter_periods(bld_jsb, title = "Total Winter Cyclists at JSB")
-summarise_winter_periods(bld_slk, title = "Total Winter Cyclists at SLK")
+summarise_winter_periods(bld_jsb, title = "Total Winter Cyclists at Johnson St. Bridge")
+summarise_winter_periods(bld_slk, title = "Total Winter Cyclists at Selkirk Trestle")
+summarise_winter_periods(bld_en, title = "Total Winter Cyclists at E&N")
 
 #shows relative change year over year
 summarise_winter_periods_yoy <- function(df, period_start_month = 11, period_start_day = 15,
@@ -279,6 +302,96 @@ summarise_winter_periods_yoy <- function(df, period_start_month = 11, period_sta
 summarise_winter_periods_yoy(bld_jsb, title = "Year-over-Year Change in Winter Cyclists at JSB")
 summarise_winter_periods_yoy(bld_slk, title = "Year-over-Year Change in Winter Cyclists at SLK")
 
+#function to show two data frames and compare to baseline at each location
+summarise_winter_periods_yoy <- function(df_list, labels,
+                                         period_start_month = 11, period_start_day = 15,
+                                         period_end_month = 3,   period_end_day = 15,
+                                         title = "2025/26 vs Historical Average — Winter Cyclists",
+                                         baseline_color = "steelblue") {
+  
+  if (length(df_list) != length(labels)) {
+    stop("df_list and labels must be the same length")
+  }
+  
+  get_period_totals <- function(df, location_label) {
+    years    <- unique(year(df$date_only))
+    min_year <- min(years)
+    max_year <- max(years)
+    
+    periods <- do.call(rbind, lapply(min_year:(max_year - 1), function(yr) {
+      tibble(
+        period_label = paste0(yr, "/", substr(yr + 1, 3, 4)),
+        start        = as.Date(paste(yr,     period_start_month, period_start_day, sep = "-")),
+        end          = as.Date(paste(yr + 1, period_end_month,   period_end_day,   sep = "-"))
+      )
+    }))
+    
+    data_start <- min(df$date_only)
+    data_end   <- max(df$date_only)
+    
+    periods <- periods %>%
+      filter(end >= data_start & start <= data_end)
+    
+    results <- do.call(rbind, lapply(1:nrow(periods), function(i) {
+      df %>%
+        filter(date_only >= periods$start[i] & date_only <= periods$end[i]) %>%
+        summarise(total_cyclists = sum(count, na.rm = TRUE)) %>%
+        mutate(period   = periods$period_label[i],
+               start    = periods$start[i],
+               end      = periods$end[i],
+               complete = periods$start[i] >= data_start & periods$end[i] <= data_end)
+    }))
+    
+    results$location <- location_label
+    return(results)
+  }
+  
+  all_results <- do.call(bind_rows, lapply(seq_along(df_list), function(i) {
+    get_period_totals(df_list[[i]], labels[i])
+  }))
+  
+  comparison <- all_results %>%
+    group_by(location) %>%
+    arrange(start) %>%
+    summarise(
+      current_period   = last(period),
+      current_total    = last(total_cyclists),
+      baseline_periods = paste(period[-n()], collapse = ", "),
+      baseline_avg     = mean(total_cyclists[-n()], na.rm = TRUE),
+      abs_change       = current_total - baseline_avg,
+      pct_change       = abs_change / baseline_avg * 100,
+      .groups = "drop"
+    ) %>%
+    mutate(direction = if_else(pct_change >= 0, "increase", "decrease")) %>%
+    mutate(location = factor(location, levels = labels))
+  
+  p <- ggplot(comparison, aes(x = location, y = pct_change, fill = direction)) +
+    geom_col() +
+    geom_hline(yintercept = 0, linewidth = 0.5, color = "grey30") +
+    geom_text(aes(label = paste0(
+      ifelse(pct_change > 0, "+", ""), round(pct_change, 1), "%\n",
+      "(", ifelse(abs_change > 0, "+", ""), scales::comma(round(abs_change)), ")"
+    )),
+    vjust = ifelse(comparison$pct_change >= 0, -0.1, 1.1), size = 3.5, lineheight = 0.9) +
+    scale_fill_manual(values = c("increase" = "#2ecc71", "decrease" = "#e74c3c")) +
+    scale_y_continuous(labels = function(x) paste0(x, "%"),
+                       expand = expansion(mult = c(0.2, 0.2))) +
+    ggtitle(title) +
+    labs(x = "", y = "% Change vs Historical Average", caption = "@jeremy77.bsky.social") +
+    theme_bw() +
+    theme(
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor   = element_blank(),
+      plot.title         = element_text(face = "bold"),
+      axis.text.x        = element_text(angle = 45, hjust = 1),
+      legend.position    = "none"
+    )
+  
+  print(p)
+  return(invisible(list(period_totals = all_results, comparison = comparison)))
+}
+
+summarise_winter_periods_yoy(df_list = list(bld_jsb, bld_en, bld_slk), labels = c('Johnson St. Bridge', 'E&N at Hereward Rd.', 'Selkirk Trestle'))
 
 ######
 plot_flow_id_availability <- function(base_id, start_date, end_date, interval = 4) {
@@ -360,7 +473,7 @@ plot_flow_id_availability <- function(base_id, start_date, end_date, interval = 
 }
 
 
-#get data for the last two full years to get a sense of the normal ranges
+plo#get data for the last two full years to get a sense of the normal ranges
 selkirk <- get_bike_count_data('100057501', as.Date('2024-06-01'), as.Date('2026-06-08'), c("5", "6"), "3")
 jsb <- get_bike_count_data('100059041', as.Date('2024-06-01'), as.Date('2026-06-08'), c("1","2"), "4")
 
