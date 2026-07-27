@@ -66,6 +66,37 @@ p1 <- sl %>% filter(GEO %in% c('British Columbia'), Electric.power..components =
 ggplotly(p1)
 
 #Was 2015 low elec use drivin by a warm spring?
+install.packages(
+  "weathercan",
+  repos = c("https://ropensci.r-universe.dev", "https://cloud.r-project.org")
+)
+library(weathercan)
+
+stations_search("Vancouver", interval = "day")
+
+#use Van Harbour 888 as record is continous from 1925-2026
+van_weather<- weather_dl(station_ids = 888, start = '2008-01-01', end = '2026-04-01')
+
+#only care about temp
+van_weather_daily <- van_weather %>% group_by(date) %>% summarize(daily_temp = mean(temp, na.rm = T))
+
+#converet to proper date object then group by month
+van_weather_daily$date <- as.Date(van_weather_daily$date)
+van_weather_daily$year <- year(van_weather_daily$date)
+van_weather_daily$month <- month(van_weather_daily$date)
+
+van_weather_monthly <- van_weather_daily %>% group_by(year, month) %>% 
+  summarize(monthly_temp = mean(daily_temp, na.rm = T))
+
+#do a yearly plot like for electricity use
+p<-ggplot(van_weather_monthly, aes(x = month, y = monthly_temp, group = year, color = factor(year)))+
+  geom_line(linewidth = 0.7)+
+  geom_point(size = 1)+
+  scale_color_viridis_d(name = "Year")+ # perceptually even colors for many years5  
+  labs(x = "", y = "TWh", title = "Year-over-Year Temperature in Vancouver BC")+
+  theme_minimal()
+
+ggplotly(p)
 
 #Import, exports, net
 sl_net <- sl %>% select(REF_DATE,Electric.power..components, GEO, VALUE) %>%
