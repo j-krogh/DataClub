@@ -65,7 +65,7 @@ p1 <- sl %>% filter(GEO %in% c('British Columbia'), Electric.power..components =
 
 ggplotly(p1)
 
-#Was 2015 low elec use drivin by a warm spring?
+#Was 2015 low elec use driven by a warm spring? Yeah looks that way
 install.packages(
   "weathercan",
   repos = c("https://ropensci.r-universe.dev", "https://cloud.r-project.org")
@@ -217,46 +217,106 @@ ggsave("./plots/AB_Electricity_Wind_Solar_small.png", p, width = 6, height = 5)
 #15000km/yr * 17kwh per 100km = 2500 kwh/car/year - 437 GWh/yr or 0.437 TWh
 
 #Data Centers
-#Mr. Dix says 60 megawatts max
+#Mr. Dix says 60 megawatts for data centers 166MW for crypto Bill up to 400MW more to come
+#https://www.biv.com/news/real-estate/data-centres-are-coming-to-bc-but-is-there-enough-power-12044005
+#Annual average use is ~8000MW
 
 #LNG
 
 #Roof top solar maybe 0.06 - 0.1 TWh per year not nothing but still way below Ab
 
-#----
+#---- Intertie Stuff
+BCH_Int <- read.csv("BCH_Intertie_Hist.csv")
+
+#BCH has negative as import and postive as exports. Lets switch that to match Stats Canada
+BCH_Int$bc_ab_MWh = -1 * BCH_Int$bc_ab_MWh
+BCH_Int$bc_us_MWh = -1 * BCH_Int$bc_us_MWh
+
+BCH_Int$datetime_pst <- ymd_hms(BCH_Int$datetime_pst, truncated = 3)
+BCH_Int$Month <- lubridate::month(BCH_Int$datetime_pst)
+BCH_Int$Year <- lubridate::year(BCH_Int$datetime_pst)
+
+#Data is in MWh per hour so MW
+#Trends in Power Imports/Exports as monthly MWh
+BCH_Int_Monthly <- BCH_Int %>% filter(!is.na(Year)) %>% group_by(Year, Month) %>% 
+  summarize(bc_us_monthly = sum(bc_us_MWh, na.rm = T), 
+            bc_ab_monthly = sum(bc_ab_MWh, na.rm = T)) %>% 
+  mutate(date = as.Date(paste0(Year, "-", Month, "-15")))
+
+#Any hourly patterns?
+
+#BC USA
+ggplot(BCH_Int_Monthly, aes(x = date)) + 
+  geom_ribbon(ymin = 0, ymax = ) + 
+  geom_line()
+
+#Nice looking plot
+BCH_Int_Monthly_long <- pivot_longer(BCH_Int_Monthly,
+                                     cols = c('bc_us_monthly', 'bc_ab_monthly'),
+                                     values_to = "value",
+                                     names_to = "Intertie")
+
+
+BCH_Int_Monthly_long <- BCH_Int_Monthly_long  %>%
+  arrange(date) %>%
+  mutate(
+    val = value / 1e6,
+    pos = pmax(val, 0),   # positive part, 0 where negative
+    neg = pmin(val, 0)    # negative part, 0 where positive
+  )
+
+BCH_Int_Monthly_long %>% filter(Intertie == "bc_us_monthly") %>%
+ggplot(aes(x = date)) +
+  geom_ribbon(aes(ymin = 0, ymax = pos, fill = "Positive")) +
+  geom_ribbon(aes(ymin = neg, ymax = 0, fill = "Negative")) +
+  geom_line(aes(y = val), linewidth = 0.3) +
+  #geom_point(aes(y = val), size = 0.6) +
+  geom_hline(yintercept = 0, colour = "grey40") +
+  scale_fill_manual(values = c("Positive" = "#DB444B",
+                               "Negative" = "#006BA2"), name = NULL) +
+  coord_cartesian(ylim = c(-2, 2)) +
+  labs(x = "", y = "TWh", title = "Monthly Total Imports and Exports to BC - USA") +
+  annotate('text', x=as.Date('2009-01-10'), y= -1.25, label = 'Exports from BC to USA') +
+  annotate('text', x=as.Date('2009-01-10'), y= +1.25, label = 'Imports to BC from USA') +
+  theme_economist() +
+  theme(legend.position = "none")
 
 
 
-# 1. Build the summarized data once
-plot_df <- sl %>%
-  filter(GEO %in% c('British Columbia'),
-         Electric.power..components == 'Total electricity available for use within specific geographic border') %>%
-  mutate(years = lubridate::year(REF_DATE)) %>%
-  group_by(GEO, years) %>%
-  summarize(mean_val = mean(VALUE, na.rm = TRUE), .groups = "drop") %>%
-  mutate(twh = mean_val / 1e6) %>% filter(years != 2026)
+#BC AB
+BCH_Int_Monthly_long %>% filter(Intertie == "bc_ab_monthly") %>%
+  ggplot(aes(x = date)) +
+  geom_ribbon(aes(ymin = 0, ymax = pos, fill = "Positive")) +
+  geom_ribbon(aes(ymin = neg, ymax = 0, fill = "Negative")) +
+  geom_line(aes(y = val), linewidth = 0.3) +
+  #geom_point(aes(y = val), size = 0.6) +
+  geom_hline(yintercept = 0, colour = "grey40") +
+  scale_fill_manual(values = c("Positive" = "#DB444B",
+                               "Negative" = "#006BA2"), name = NULL) +
+  coord_cartesian(ylim = c(-2, 2)) +
+  labs(x = "", y = "TWh", title = "Monthly Total Imports and Exports to BC - AB") +
+  annotate('text', x=as.Date('2009-01-10'), y= -1.25, label = 'Exports from BC to AB') +
+  annotate('text', x=as.Date('2009-01-10'), y= +1.25, label = 'Imports to BC from AB') +
+  theme_economist() +
+  theme(legend.position = "none")
 
-# 2. Compute the slope (TWh/year) for each GEO
-slopes <- plot_df %>%
-  group_by(GEO) %>%
-  summarize(
-    slope = coef(lm(twh ~ years))[["years"]],
-    # position for the label: last year, near the group's max value
-    x = max(years),
-    y = max(twh),
-    .groups = "drop"
-  ) %>%
-  mutate(label = paste0("slope = ", round(slope * 1000, 1), " GWh/yr"))
+#Look at hourly data for 2025 the last full year of data
+BCH_Int %>% filter(datetime_pst > as.POSIXct("2018-01-01"), datetime_pst < as.POSIXct("2019-01-01")) %>% 
+  mutate(hour_of_day = lubridate::hour(datetime_pst), Month = as.factor(Month)) %>% 
+  group_by(Month, hour_of_day) %>% summarize(month_hr_mean = mean(bc_us_MWh, na.rm = T)) %>%
+  ggplot(aes(x = hour_of_day, y=month_hr_mean, colour = Month)) + 
+  geom_point() + 
+  geom_line() + 
+  scale_x_continuous(breaks = seq(0, 24, by = 4)) +
+  scale_color_discrete(
+    labels = c("1" = "Jan", "2" = "Feb", "3" = "Mar", "4" = "Apr",
+               "5" = "May", "6" = "Jun", "7" = "Jul", "8" = "Aug",
+               "9" = "Sep", "10" = "Oct", "11" = "Nov", "12" = "Dec")
+  ) +
+  labs(y = "MWh", x = "Hour of the Day") +
+  theme_economist() +
+  theme(legend.position = 'right')
 
-# 3. Plot
-ggplot(plot_df, aes(x = years, y = twh)) +
-  geom_point() +
-  geom_line() +
-  geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +
-  geom_text(data = slopes,
-            aes(x = x, y = y, label = label),
-            hjust = 1, vjust = -0.5, show.legend = FALSE) +
-  labs(y = "TWh", x = "Date", title = "Electricity Used")
 
 #https://public.tableau.com/app/profile/icbc/viz/QuickStatistics-Policiesinforce/VehicleInsurancePoliciesinForce
 

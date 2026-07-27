@@ -361,3 +361,4 @@ plot_bc_interties <- function(flows,
     )
 }
 
+write.csv(flows, "BCH_Intertie_Hist.csv", row.names = F)
