@@ -301,7 +301,24 @@ BCH_Int_Monthly_long %>% filter(Intertie == "bc_ab_monthly") %>%
   theme(legend.position = "none")
 
 #Look at hourly data for 2025 the last full year of data
-BCH_Int %>% filter(datetime_pst > as.POSIXct("2018-01-01"), datetime_pst < as.POSIXct("2019-01-01")) %>% 
+p<-BCH_Int %>% filter(datetime_pst > as.POSIXct("2025-01-01"), datetime_pst < as.POSIXct("2026-01-01")) %>% 
+  mutate(hour_of_day = lubridate::hour(datetime_pst), Month = as.factor(Month)) %>% 
+  group_by(Month, hour_of_day) %>% summarize(month_hr_mean = mean(bc_ab_MWh, na.rm = T)) %>%
+  ggplot(aes(x = hour_of_day, y=month_hr_mean, colour = Month)) + 
+  geom_point() + 
+  geom_line() + 
+  scale_x_continuous(breaks = seq(0, 24, by = 4)) +
+  scale_color_discrete(
+    labels = c("1" = "Jan", "2" = "Feb", "3" = "Mar", "4" = "Apr",
+               "5" = "May", "6" = "Jun", "7" = "Jul", "8" = "Aug",
+               "9" = "Sep", "10" = "Oct", "11" = "Nov", "12" = "Dec")
+  ) +
+  labs(y = "MWh", x = "Hour of the Day", title = "BC - AB Intertie") +
+  theme_economist() +
+  theme(legend.position = 'right')
+
+#USA
+p<-BCH_Int %>% filter(datetime_pst > as.POSIXct("2025-01-01"), datetime_pst < as.POSIXct("2026-01-01")) %>% 
   mutate(hour_of_day = lubridate::hour(datetime_pst), Month = as.factor(Month)) %>% 
   group_by(Month, hour_of_day) %>% summarize(month_hr_mean = mean(bc_us_MWh, na.rm = T)) %>%
   ggplot(aes(x = hour_of_day, y=month_hr_mean, colour = Month)) + 
@@ -313,7 +330,7 @@ BCH_Int %>% filter(datetime_pst > as.POSIXct("2018-01-01"), datetime_pst < as.PO
                "5" = "May", "6" = "Jun", "7" = "Jul", "8" = "Aug",
                "9" = "Sep", "10" = "Oct", "11" = "Nov", "12" = "Dec")
   ) +
-  labs(y = "MWh", x = "Hour of the Day") +
+  labs(y = "MWh", x = "Hour of the Day", title = "BC - USA Intertie") +
   theme_economist() +
   theme(legend.position = 'right')
 
