@@ -1,5 +1,6 @@
 #Data Club Graphs for July 2026
 library(dplyr)
+library(tidyr)
 library(ggplot2)
 library(ggthemes)
 library(lubridate)
@@ -18,8 +19,8 @@ sl %>% filter(GEO %in% c('British Columbia', 'Alberta'), Electric.power..compone
 
 sl %>% filter(GEO %in% c('British Columbia', 'Alberta'), Electric.power..components == 'Total electricity available for use within specific geographic border') %>%
   mutate(years = lubridate::year(REF_DATE)) %>% group_by(GEO, years) %>% 
-  summarize(mean_val = mean(VALUE, na.rm = T)) %>% filter(years != 2026) %>% #2026 isn't a full year!
-  ggplot(aes(x = years, y=mean_val/1e6, colour = GEO)) +
+  summarize(sum_val = sum(VALUE, na.rm = T)) %>% filter(years != 2026) %>% #2026 isn't a full year!
+  ggplot(aes(x = years, y=sum_val/1e6, colour = GEO)) +
   geom_point() +
   geom_line() +
   geom_smooth(method = "lm", se = F, linetype = 'solid') +
@@ -44,7 +45,7 @@ p <- sl %>% filter(GEO %in% c('British Columbia'), Electric.power..components ==
   geom_col(fill = '#006BA2')+
   coord_cartesian(ylim = c(40, 75)) +
   #geom_smooth(method = "lm", se = F, linetype = 'solid', color = '#3F5661') +
-  labs(y = "TWh", x = 'Date', title = "Total Annual Electricity Used in BC", caption = "Statistics Canada Table: 25100016 \n @jeremy77.bsky.social") +
+  labs(y = "TWh", x = 'Date', title = "Total Annual Electricity Used in BC", caption = "Statistics Canada Table: 25100016") +
   theme_economist()
 
   ggsave("./plots/BC_Electricity_Useage.png",p)
@@ -142,7 +143,7 @@ p<-bc %>% mutate(years = lubridate::year(REF_DATE)) %>% group_by(years) %>%
   scale_fill_manual(values = c("TRUE" = "#DB444B",
                                "FALSE" = "#006BA2")) +
   coord_cartesian(ylim = c(-12, 12)) +
-  labs(y = "TWh", x = '', title = "Annual Total Imports and Exports to BC", caption = "Statistics Canada Table: 25100016 \n @jeremy77.bsky.social") +
+  labs(y = "TWh", x = '', title = "Annual Total Imports and Exports to BC", caption = "Statistics Canada Table: 25100016") +
   annotate('text', x=2009, y= -5.75, label = 'Exports from BC') +
   annotate('text', x=2009, y= +5.75, label = 'Imports to BC') +
   theme_economist() +
@@ -182,7 +183,7 @@ p<-gen %>% filter(GEO %in% c('British Columbia'), Type.of.electricity.generation
   ggplot(aes(x = REF_DATE, y = VALUE/1e6, colour = Type.of.electricity.generation)) +
   geom_line(linewidth = 0.75) +
   coord_cartesian(ylim = c(0, 1.7)) +
-  labs(x = "", y = "TWh", title = "Monthly Solar and Wind Electricity in BC", caption = "Statistics Canada: Table 25100015 \n @jeremy77.bsky.social") +
+  labs(x = "", y = "TWh", title = "Monthly Solar and Wind Electricity in BC", caption = "Statistics Canada: Table 25100015") +
   scale_colour_manual(name = "",
                         values = c('Solar' = '#EBB434', 
                                    'Wind power turbine'= '#379A8B'),
@@ -199,7 +200,7 @@ p<-gen %>% filter(GEO %in% c('Alberta'), Type.of.electricity.generation %in% c('
   ggplot(aes(x = REF_DATE, y = VALUE/1e6, colour = Type.of.electricity.generation)) +
   geom_line(linewidth = 0.75) +
   coord_cartesian(ylim = c(0, 1.7)) +
-  labs(x = "", y = "TWh", title = "Monthly Solar and Wind Electricity in Alberta", caption = "Statistics Canada: Table 25100015 \n @jeremy77.bsky.social") +
+  labs(x = "", y = "TWh", title = "Monthly Solar and Wind Electricity in Alberta", caption = "Statistics Canada: Table 25100015") +
   scale_colour_manual(name = "",
                       values = c('Solar' = '#EBB434', 
                                  'Wind power turbine'= '#379A8B'),
@@ -221,7 +222,9 @@ ggsave("./plots/AB_Electricity_Wind_Solar_small.png", p, width = 6, height = 5)
 #https://www.biv.com/news/real-estate/data-centres-are-coming-to-bc-but-is-there-enough-power-12044005
 #Annual average use is ~8000MW
 
-#LNG
+#LNG 138MW for Woodfiber but again units...
+
+#Battery on the island 100MW units
 
 #Roof top solar maybe 0.06 - 0.1 TWh per year not nothing but still way below Ab
 
@@ -300,37 +303,47 @@ BCH_Int_Monthly_long %>% filter(Intertie == "bc_ab_monthly") %>%
   theme_economist() +
   theme(legend.position = "none")
 
+year_plot = 2026
+
 #Look at hourly data for 2025 the last full year of data
-p<-BCH_Int %>% filter(datetime_pst > as.POSIXct("2025-01-01"), datetime_pst < as.POSIXct("2026-01-01")) %>% 
+p1<-BCH_Int %>% filter(datetime_pst > as.POSIXct(paste0(year_plot,"-01-01")), datetime_pst < as.POSIXct(paste0(year_plot + 1,"-01-01"))) %>% 
   mutate(hour_of_day = lubridate::hour(datetime_pst), Month = as.factor(Month)) %>% 
   group_by(Month, hour_of_day) %>% summarize(month_hr_mean = mean(bc_ab_MWh, na.rm = T)) %>%
   ggplot(aes(x = hour_of_day, y=month_hr_mean, colour = Month)) + 
   geom_point() + 
   geom_line() + 
   scale_x_continuous(breaks = seq(0, 24, by = 4)) +
+  coord_cartesian(ylim = c(-2000, 2000)) +
+  annotate("text", x = 2, y = 1250, label = "Imports")+
+  annotate("text", x = 2, y = -1250, label = "Exports")+
   scale_color_discrete(
     labels = c("1" = "Jan", "2" = "Feb", "3" = "Mar", "4" = "Apr",
                "5" = "May", "6" = "Jun", "7" = "Jul", "8" = "Aug",
                "9" = "Sep", "10" = "Oct", "11" = "Nov", "12" = "Dec")
   ) +
-  labs(y = "MWh", x = "Hour of the Day", title = "BC - AB Intertie") +
+  labs(y = "MWh", x = "Hour of the Day", title = paste0(year_plot," BC - AB Intertie"), 
+       caption = "Source: BC Hydro Histroical Actual Flow") +
   theme_economist() +
   theme(legend.position = 'right')
 
 #USA
-p<-BCH_Int %>% filter(datetime_pst > as.POSIXct("2025-01-01"), datetime_pst < as.POSIXct("2026-01-01")) %>% 
+p2<-BCH_Int %>% filter(datetime_pst > as.POSIXct(paste0(year_plot,"-01-01")), datetime_pst < as.POSIXct(paste0(year_plot + 1,"-01-01"))) %>% 
   mutate(hour_of_day = lubridate::hour(datetime_pst), Month = as.factor(Month)) %>% 
   group_by(Month, hour_of_day) %>% summarize(month_hr_mean = mean(bc_us_MWh, na.rm = T)) %>%
   ggplot(aes(x = hour_of_day, y=month_hr_mean, colour = Month)) + 
   geom_point() + 
   geom_line() + 
   scale_x_continuous(breaks = seq(0, 24, by = 4)) +
+  coord_cartesian(ylim = c(-2000, 2000)) +
+  annotate("text", x = 2, y = 1250, label = "Imports")+
+  annotate("text", x = 2, y = -1250, label = "Exports")+
   scale_color_discrete(
     labels = c("1" = "Jan", "2" = "Feb", "3" = "Mar", "4" = "Apr",
                "5" = "May", "6" = "Jun", "7" = "Jul", "8" = "Aug",
                "9" = "Sep", "10" = "Oct", "11" = "Nov", "12" = "Dec")
   ) +
-  labs(y = "MWh", x = "Hour of the Day", title = "BC - USA Intertie") +
+  labs(y = "MWh", x = "Hour of the Day", title = paste0(year_plot, " BC - USA Intertie"),
+       caption = "Source: BC Hydro Histroical Actual Flow") +
   theme_economist() +
   theme(legend.position = 'right')
 
