@@ -66,6 +66,33 @@ p1 <- sl %>% filter(GEO %in% c('British Columbia'), Electric.power..components =
 
 ggplotly(p1)
 
+#Make a nice version of this plot
+sl$lineType <- "other"
+sl$lineType[sl$year == 2026] = "this_year"
+sl$lineType[sl$year == 2025] = "last_year"
+
+sl$lineType <- factor(sl$lineType, levels = c("this_year", "last_year", "other"))
+
+sl %>% filter(GEO %in% c('British Columbia'), Electric.power..components == 'Total electricity available for use within specific geographic border') %>%
+  ggplot(aes(x = month, y = VALUE/1e6, group = year, color = lineType, linewidth = lineType))+
+  geom_line()+
+  #geom_point(size = 1)+
+  scale_linewidth_manual(values = c("this_year" = 2, 
+                                    "last_year" = 1.25, 
+                                    "other" = 0.5),
+                         labels = c("this_year" = "2026",
+                                    "last_year" = "2025",
+                                    "other" = "2008 - 2025")) + 
+  scale_color_manual(values = c("other" = "#A4BDC9",
+                                "this_year" = "#DB444B",
+                                "last_year" = "#379A8B"),
+                     labels = c("this_year" = "2026",
+                                "last_year" = "2025",
+                                "other" = "2008 - 2025"))+
+  labs(x = "", y = "TWh", title = "Year-over-Year Comparison Total Electricity Consumption in BC")+
+  theme_economist() +
+  theme(legend.position = "bottom", legend.title = element_blank())
+
 #Was 2015 low elec use driven by a warm spring? Yeah looks that way
 install.packages(
   "weathercan",
