@@ -330,7 +330,7 @@ BCH_Int_Monthly_long %>% filter(Intertie == "bc_ab_monthly") %>%
   theme_economist() +
   theme(legend.position = "none")
 
-year_plot = 2026
+year_plot = 2025
 
 #Look at hourly data for 2025 the last full year of data
 p1<-BCH_Int %>% filter(datetime_pst > as.POSIXct(paste0(year_plot,"-01-01")), datetime_pst < as.POSIXct(paste0(year_plot + 1,"-01-01"))) %>% 
