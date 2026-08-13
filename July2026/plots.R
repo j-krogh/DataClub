@@ -29,11 +29,11 @@ sl %>% filter(GEO %in% c('British Columbia', 'Alberta'), Electric.power..compone
 
 #Make a nice plot for just BC
 #https://sa.ipaa.org.au/wp-content/uploads/2026/02/Economist-CHARTstyleguide_20170505.pdf
-sl %>% filter(GEO %in% c('British Columbia'), Electric.power..components == 'Total electricity available for use within specific geographic border') %>%
+p<-sl %>% filter(GEO %in% c('British Columbia'), Electric.power..components == 'Total electricity available for use within specific geographic border') %>%
   ggplot(aes(x = REF_DATE, y=VALUE/1e6)) +
   #geom_point(color = '#006BA2', size = 2) +
   geom_line(color = '#006BA2', linewidth = 0.75) +
-  labs(y = "TWh", x = '', title = "Total Monthly Electricity Used in BC 2008 - 2026", caption = "Statistics Canada Table: 25100016") +
+  labs(y = "TWh", x = '', title = "Total Monthly Electricity Used in BC 2008 - 2026", caption = "Statistics Canada Table: 25100016\n @jeremy77.bsky.social") +
   theme_economist()
 
 p <- sl %>% filter(GEO %in% c('British Columbia'), Electric.power..components == 'Total electricity available for use within specific geographic border') %>%
@@ -48,8 +48,8 @@ p <- sl %>% filter(GEO %in% c('British Columbia'), Electric.power..components ==
   labs(y = "TWh", x = 'Date', title = "Total Annual Electricity Used in BC", caption = "Statistics Canada Table: 25100016") +
   theme_economist()
 
-  ggsave("./plots/BC_Electricity_Useage.png",p)
-  ggsave("./plots/BC_Electricity_Useage_small.png", p, width = 6, height = 5)
+  ggsave("./plots/BC_Electricity_Monthly_Useage.png",p)
+  ggsave("./plots/BC_Electricity_Useage_Monthly_small.png", p, width = 6, height = 5)
 
 #explore why 2015 was so low
 sl <- sl %>% mutate(year = year(REF_DATE),
@@ -73,7 +73,7 @@ sl$lineType[sl$year == 2025] = "last_year"
 
 sl$lineType <- factor(sl$lineType, levels = c("this_year", "last_year", "other"))
 
-sl %>% filter(GEO %in% c('British Columbia'), Electric.power..components == 'Total electricity available for use within specific geographic border') %>%
+p<-sl %>% filter(GEO %in% c('British Columbia'), Electric.power..components == 'Total electricity available for use within specific geographic border') %>%
   ggplot(aes(x = month, y = VALUE/1e6, group = year, color = lineType, linewidth = lineType))+
   geom_line()+
   #geom_point(size = 1)+
@@ -89,9 +89,12 @@ sl %>% filter(GEO %in% c('British Columbia'), Electric.power..components == 'Tot
                      labels = c("this_year" = "2026",
                                 "last_year" = "2025",
                                 "other" = "2008 - 2025"))+
-  labs(x = "", y = "TWh", title = "Year-over-Year Comparison Total Electricity Consumption in BC")+
+  labs(x = "", y = "TWh", title = "Year-over-Year Comparison Total Monthly Electricity Consumption in BC",
+       caption = "Statistics Canada Table: 25100016\n jeremy77.bsky.social")+
   theme_economist() +
   theme(legend.position = "bottom", legend.title = element_blank())
+
+ggsave("Year-over-Year-Monthly_Electricity.png", p, width = 8, height = 6)
 
 #Was 2015 low elec use driven by a warm spring? Yeah looks that way
 install.packages(
