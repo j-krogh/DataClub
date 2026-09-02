@@ -1,0 +1,159 @@
+"bike_latitude","bike_longitude","station_name","event","timestamp"
+48.432657,-123.390404,"E&N Rail Trail & Wilson St.","taken_out",2026-09-02 09:06:07.972765
+48.437176,-123.373501,"Bridge St. & Hillside Ave.","taken_out",2026-09-02 09:08:13.977118
+48.414828,-123.377763,"Niagara St. & Boyd St.","taken_out",2026-09-02 09:08:13.977118
+48.419654,-123.354584,"Cook St. & Richardson St.","taken_out",2026-09-02 09:08:13.977118
+48.424602,-123.36478,"Fort St. & Douglas St.","returned",2026-09-02 09:09:16.680545
+48.412331,-123.357452,"Cook St. & May St.","returned",2026-09-02 09:09:16.680545
+48.427326,-123.377304,"Tyee Rd., Kimta Rd. & Songhees Rd.","returned",2026-09-02 09:11:21.314005
+48.412208,-123.357475,"Cook St. & May St.","taken_out",2026-09-02 09:12:23.967813
+48.424837,-123.368093,"Fort St. & Government St.","taken_out",2026-09-02 09:13:26.253131
+48.42386,-123.356991,"Fort St. & Vancouver St.","returned",2026-09-02 09:13:26.253131
+48.414831,-123.377896,"Niagara St. & Boyd St.","taken_out",2026-09-02 09:15:31.015085
+48.429139,-123.366934,"Government St. & Fisgard St.","returned",2026-09-02 09:15:31.015085
+48.423546,-123.369834,"Ship Point","returned",2026-09-02 09:15:31.015085
+48.428303,-123.366221,"Centennial Square","returned",2026-09-02 09:16:33.39467
+48.415543,-123.383678,"Dallas Rd. & Dock St.","taken_out",2026-09-02 09:18:38.186333
+48.414828,-123.377763,"Niagara St. & Boyd St.","returned",2026-09-02 09:18:38.186333
+48.420884,-123.351377,"Burdett Ave. & Linden Ave.","taken_out",2026-09-02 09:19:40.669316
+48.430297,-123.388823,"Esquimalt Rd. & Robert St.","taken_out",2026-09-02 09:19:40.669316
+48.436689,-123.382906,"Tyee Rd. & Regatta Lndg.","taken_out",2026-09-02 09:20:42.874967
+48.412203,-123.372276,"Government St. & Niagara St.","taken_out",2026-09-02 09:21:45.206321
+48.425117,-123.353194,"Yates St. & Cook St.","taken_out",2026-09-02 09:21:45.206321
+48.412331,-123.357452,"Cook St. & May St.","taken_out",2026-09-02 09:22:47.744962
+48.442701,-123.357366,"Graham St. & Topaz Ave.","taken_out",2026-09-02 09:25:54.44384
+48.415483,-123.383682,"Dallas Rd. & Dock St.","returned",2026-09-02 09:26:56.700588
+48.436554,-123.364993,"Kings Rd. & Westbourne Pl.","returned",2026-09-02 09:27:58.786447
+48.428328,-123.366258,"Centennial Square","returned",2026-09-02 09:27:58.786447
+48.442698,-123.35735,"Graham St. & Topaz Ave.","returned",2026-09-02 09:27:58.786447
+48.428329,-123.366259,"Centennial Square","returned",2026-09-02 09:27:58.786447
+48.423883,-123.356978,"Fort St. & Vancouver St.","taken_out",2026-09-02 09:29:01.013676
+48.424939,-123.368202,"Fort St. & Government St.","returned",2026-09-02 09:30:03.593366
+48.412177,-123.372166,"Government St. & Niagara St.","returned",2026-09-02 09:30:03.593366
+48.429139,-123.366934,"Government St. & Fisgard St.","taken_out",2026-09-02 09:31:06.055382
+48.414828,-123.377763,"Niagara St. & Boyd St.","taken_out",2026-09-02 09:31:06.055382
+48.427849,-123.362031,"Pandora Ave. & Blanshard St.","taken_out",2026-09-02 09:31:06.055382
+48.426191,-123.362146,"Blanshard St. & Yates St.","taken_out",2026-09-02 09:31:06.055382
+48.422939,-123.362993,"Blanshard St. & Courtney St.","returned",2026-09-02 09:34:13.326112
+48.446872,-123.349938,"Cook St. & Lang St.","returned",2026-09-02 09:34:13.326112
+48.427769,-123.380695,"Kimta Rd. & Paul Kane Pl.","returned",2026-09-02 09:34:13.326112
+48.446514,-123.358017,"Jackson St. & Finlayson St.","taken_out",2026-09-02 09:36:16.927571
+48.432722,-123.364928,"Douglas St. & Pembroke St.","returned",2026-09-02 09:36:16.927571
+48.426201,-123.362148,"Blanshard St. & Yates St.","returned",2026-09-02 09:36:16.927571
+48.426457,-123.365209,"Yates St. & Douglas St.","returned",2026-09-02 09:37:18.576276
+48.427164,-123.370605,"Wharf St. & Yates St.","taken_out",2026-09-02 09:40:24.293054
+48.414829,-123.377763,"Niagara St. & Boyd St.","returned",2026-09-02 09:40:24.293054
+48.412172,-123.372267,"Government St. & Niagara St.","taken_out",2026-09-02 09:41:27.017531
+48.446514,-123.358017,"Jackson St. & Finlayson St.","returned",2026-09-02 09:41:27.017531
+48.410312,-123.374223,"Dallas Rd. & Government St.","taken_out",2026-09-02 09:44:35.118343
+48.415463,-123.383752,"Dallas Rd. & Dock St.","returned",2026-09-02 09:44:35.118343
+48.41036,-123.374271,"Dallas Rd. & Government St.","taken_out",2026-09-02 09:45:37.537773
+48.421297,-123.381905,"St. Lawrence St. & Michigan St. (Fisherman's Wharf)","returned",2026-09-02 09:49:46.53108
+48.426841,-123.368501,"Yates St. & Langley St.","returned",2026-09-02 09:50:48.722102
+48.430403,-123.376388,"Harbour Rd.","returned",2026-09-02 09:57:01.943369
+48.426444,-123.365225,"Yates St. & Douglas St.","taken_out",2026-09-02 09:58:04.364592
+48.410357,-123.374241,"Dallas Rd. & Government St.","returned",2026-09-02 09:58:04.364592
+48.449123,-123.358826,"Jackson St. & Tolmie Ave.","taken_out",2026-09-02 09:59:06.770645
+48.417133,-123.369126,"Government St. & Michigan St.","taken_out",2026-09-02 10:00:09.27578
+48.417068,-123.369113,"Government St. & Michigan St.","taken_out",2026-09-02 10:00:09.27578
+48.449132,-123.358823,"Jackson St. & Tolmie Ave.","returned",2026-09-02 10:00:09.27578
+48.440289,-123.374129,"Garbally Rd. & Bridge St.","taken_out",2026-09-02 10:01:11.388928
+48.430031,-123.369846,"Store St. & Herald St.","returned",2026-09-02 10:01:11.388928
+48.421245,-123.381925,"St. Lawrence St. & Michigan St. (Fisherman's Wharf)","taken_out",2026-09-02 10:03:15.445603
+48.421253,-123.381923,"St. Lawrence St. & Michigan St. (Fisherman's Wharf)","taken_out",2026-09-02 10:03:15.445603
+48.435782,-123.384881,"Catherine St. & Skinner St.","returned",2026-09-02 10:06:20.302704
+48.410357,-123.374241,"Dallas Rd. & Government St.","taken_out",2026-09-02 10:07:21.992581
+48.426183,-123.362188,"Blanshard St. & Yates St.","taken_out",2026-09-02 10:08:23.693715
+48.425946,-123.356403,"Vancouver St. & Johnson St.","taken_out",2026-09-02 10:08:23.693715
+48.426215,-123.361732,"Blanshard St. & Yates St.","returned",2026-09-02 10:08:23.693715
+48.421297,-123.381905,"St. Lawrence St. & Michigan St. (Fisherman's Wharf)","taken_out",2026-09-02 10:09:25.034751
+48.426215,-123.361732,"Blanshard St. & Yates St.","taken_out",2026-09-02 10:10:26.759837
+48.426172,-123.362176,"Blanshard St. & Yates St.","returned",2026-09-02 10:10:26.759837
+48.426962,-123.370407,"Wharf St. & Yates St.","returned",2026-09-02 10:10:26.759837
+48.426222,-123.362212,"Blanshard St. & Yates St.","taken_out",2026-09-02 10:11:28.520068
+48.415456,-123.383678,"Dallas Rd. & Dock St.","returned",2026-09-02 10:11:28.520068
+48.420178,-123.371335,"Menzies St. & Quebec St.","taken_out",2026-09-02 10:13:31.847787
+48.427846,-123.36205,"Pandora Ave. & Blanshard St.","taken_out",2026-09-02 10:13:31.847787
+48.407934,-123.357477,"Cook St. & Dallas Rd.","returned",2026-09-02 10:13:31.847787
+48.428326,-123.366232,"Centennial Square","returned",2026-09-02 10:14:33.582013
+48.407933,-123.357491,"Cook St. & Dallas Rd.","taken_out",2026-09-02 10:15:35.286668
+48.410322,-123.374271,"Dallas Rd. & Government St.","returned",2026-09-02 10:15:35.286668
+48.446842,-123.349862,"Cook St. & Lang St.","taken_out",2026-09-02 10:16:36.873387
+48.432122,-123.383535,"Bay St. & Henry St.","taken_out",2026-09-02 10:16:36.873387
+48.42298,-123.363028,"Blanshard St. & Courtney St.","returned",2026-09-02 10:16:36.873387
+48.43098,-123.355734,"Vancouver St. & Green St.","taken_out",2026-09-02 10:18:40.339115
+48.413479,-123.370434,"Government St. & Simcoe St.","returned",2026-09-02 10:18:40.339115
+48.430778,-123.355639,"Vancouver St. & Green St.","returned",2026-09-02 10:18:40.339115
+48.414923,-123.356186,"Cook St. & McKenzie St.","taken_out",2026-09-02 10:19:42.099512
+48.430778,-123.355639,"Vancouver St. & Green St.","taken_out",2026-09-02 10:19:42.099512
+48.421516,-123.384628,"Dallas Rd. & Ontario St.","returned",2026-09-02 10:19:42.099512
+48.434753,-123.380629,"Central Spur Rd. & Bridges Park","returned",2026-09-02 10:19:42.099512
+48.414829,-123.377763,"Niagara St. & Boyd St.","taken_out",2026-09-02 10:20:44.248945
+48.44332,-123.383683,"Gorge Rd. & Carroll St.","taken_out",2026-09-02 10:20:44.248945
+48.42298,-123.363028,"Blanshard St. & Courtney St.","taken_out",2026-09-02 10:21:46.871385
+48.443495,-123.38371,"Gorge Rd. & Carroll St.","taken_out",2026-09-02 10:21:46.871385
+48.428329,-123.366259,"Centennial Square","taken_out",2026-09-02 10:21:46.871385
+48.446479,-123.358041,"Jackson St. & Finlayson St.","taken_out",2026-09-02 10:21:46.871385
+48.423011,-123.363051,"Blanshard St. & Courtney St.","returned",2026-09-02 10:22:48.334961
+48.423435,-123.353685,"Fort St. & Cook St.","taken_out",2026-09-02 10:23:50.196123
+48.423512,-123.369825,"Ship Point","returned",2026-09-02 10:23:50.196123
+48.413495,-123.370423,"Government St. & Simcoe St.","taken_out",2026-09-02 10:24:51.802351
+48.448996,-123.361428,"Quadra St. & Tolmie Ave.","taken_out",2026-09-02 10:26:55.260583
+48.449132,-123.358823,"Jackson St. & Tolmie Ave.","taken_out",2026-09-02 10:26:55.260583
+48.449067,-123.361396,"Quadra St. & Tolmie Ave.","taken_out",2026-09-02 10:26:55.260583
+48.423011,-123.362925,"Blanshard St. & Courtney St.","returned",2026-09-02 10:26:55.260583
+48.415959,-123.375683,"Croft St. & Simcoe St.","returned",2026-09-02 10:27:56.871165
+48.449132,-123.358823,"Jackson St. & Tolmie Ave.","returned",2026-09-02 10:27:56.871165
+48.449015,-123.361451,"Quadra St. & Tolmie Ave.","returned",2026-09-02 10:28:58.882718
+48.441129,-123.3928,"Selkirk Ave. & Arm St.","returned",2026-09-02 10:28:58.882718
+48.419623,-123.354651,"Cook St. & Richardson St.","returned",2026-09-02 10:28:58.882718
+48.449023,-123.361408,"Quadra St. & Tolmie Ave.","returned",2026-09-02 10:28:58.882718
+48.41483,-123.377763,"Niagara St. & Boyd St.","returned",2026-09-02 10:30:01.399621
+48.449015,-123.361451,"Quadra St. & Tolmie Ave.","taken_out",2026-09-02 10:31:03.855894
+48.449021,-123.361347,"Quadra St. & Tolmie Ave.","taken_out",2026-09-02 10:31:03.855894
+48.424906,-123.368003,"Fort St. & Government St.","taken_out",2026-09-02 10:31:03.855894
+48.449023,-123.361408,"Quadra St. & Tolmie Ave.","taken_out",2026-09-02 10:31:03.855894
+48.446907,-123.34971,"Cook St. & Lang St.","taken_out",2026-09-02 10:32:06.338979
+48.426463,-123.365241,"Yates St. & Douglas St.","returned",2026-09-02 10:32:06.338979
+48.426419,-123.365318,"Yates St. & Douglas St.","returned",2026-09-02 10:32:06.338979
+48.424908,-123.368112,"Fort St. & Government St.","taken_out",2026-09-02 10:34:10.935093
+48.42915,-123.366875,"Government St. & Fisgard St.","returned",2026-09-02 10:35:12.57725
+48.4491,-123.358872,"Jackson St. & Tolmie Ave.","taken_out",2026-09-02 10:36:14.225409
+48.449074,-123.358734,"Jackson St. & Tolmie Ave.","taken_out",2026-09-02 10:36:14.225409
+48.449102,-123.358861,"Jackson St. & Tolmie Ave.","taken_out",2026-09-02 10:36:14.225409
+48.449077,-123.358887,"Jackson St. & Tolmie Ave.","taken_out",2026-09-02 10:36:14.225409
+48.449204,-123.358215,"Jackson St. & Tolmie Ave.","taken_out",2026-09-02 10:36:14.225409
+48.410346,-123.374215,"Dallas Rd. & Government St.","returned",2026-09-02 10:36:14.225409
+48.446846,-123.349904,"Cook St. & Lang St.","returned",2026-09-02 10:39:18.717295
+48.414808,-123.377789,"Niagara St. & Boyd St.","returned",2026-09-02 10:41:21.410298
+48.420247,-123.371309,"Menzies St. & Quebec St.","returned",2026-09-02 10:41:21.410298
+48.441439,-123.354235,"Blackwood St. & Vista Hts.","returned",2026-09-02 10:44:26.405726
+48.441447,-123.354222,"Blackwood St. & Vista Hts.","returned",2026-09-02 10:44:26.405726
+48.4271,-123.370477,"Wharf St. & Yates St.","taken_out",2026-09-02 10:45:27.984779
+48.420877,-123.379514,"Montreal St. & Superior St.","returned",2026-09-02 10:45:27.984779
+48.441227,-123.351081,"Cook St. & Basil Ave.","taken_out",2026-09-02 10:46:29.469093
+48.441262,-123.351072,"Cook St. & Basil Ave.","taken_out",2026-09-02 10:46:29.469093
+48.425941,-123.356337,"Vancouver St. & Johnson St.","taken_out",2026-09-02 10:47:30.767735
+48.420881,-123.379566,"Montreal St. & Superior St.","returned",2026-09-02 10:47:30.767735
+48.425956,-123.35634,"Vancouver St. & Johnson St.","taken_out",2026-09-02 10:48:32.531784
+48.436422,-123.388136,"Raynor Ave. & Craigflower Rd.","taken_out",2026-09-02 10:51:37.171458
+48.441242,-123.351114,"Cook St. & Basil Ave.","taken_out",2026-09-02 10:51:37.171458
+48.440029,-123.354793,"Graham St. & Hillside Ave.","returned",2026-09-02 10:51:37.171458
+48.419797,-123.37618,"Superior St. & Oswego St.","returned",2026-09-02 10:51:37.171458
+48.440029,-123.354793,"Graham St. & Hillside Ave.","taken_out",2026-09-02 10:52:38.445343
+48.439011,-123.36233,"Kings Rd. & Wark St.","returned",2026-09-02 10:52:38.445343
+48.439011,-123.36233,"Kings Rd. & Wark St.","taken_out",2026-09-02 10:53:40.421303
+48.438958,-123.362779,"Kings Rd. & Wark St.","returned",2026-09-02 10:53:40.421303
+48.438958,-123.362779,"Kings Rd. & Wark St.","taken_out",2026-09-02 10:54:42.101005
+48.436411,-123.388136,"Raynor Ave. & Craigflower Rd.","returned",2026-09-02 10:54:42.101005
+48.436611,-123.364956,"Kings Rd. & Westbourne Pl.","returned",2026-09-02 10:54:42.101005
+48.425946,-123.355959,"Vancouver St. & Johnson St.","returned",2026-09-02 10:54:42.101005
+48.426419,-123.365318,"Yates St. & Douglas St.","taken_out",2026-09-02 10:55:43.624389
+48.425882,-123.35611,"Vancouver St. & Johnson St.","returned",2026-09-02 10:55:43.624389
+48.43663,-123.365016,"Kings Rd. & Westbourne Pl.","returned",2026-09-02 10:56:44.985624
+48.436621,-123.365023,"Kings Rd. & Westbourne Pl.","returned",2026-09-02 10:56:44.985624
+48.426825,-123.36843,"Yates St. & Langley St.","taken_out",2026-09-02 11:00:51.569773
+48.425871,-123.356078,"Vancouver St. & Johnson St.","taken_out",2026-09-02 11:00:51.569773
+48.426215,-123.362184,"Blanshard St. & Yates St.","returned",2026-09-02 11:00:51.569773
+48.412563,-123.368009,"Simcoe St. & Douglas St.","taken_out",2026-09-02 11:01:53.812551
+48.434431,-123.367191,"Government St. & Queens Ave.","returned",2026-09-02 11:01:53.812551
