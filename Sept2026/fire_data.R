@@ -7,13 +7,14 @@ library(gt)
 
 
 #Read historical fire shape file
-h_fires <- read_sf("./Sept2026/PROT_HISTORICAL_FIRE_POLYS_SP/H_FIRE_PLY_polygon.shp")
+h_fires <- read_sf("./PROT_HISTORICAL_FIRE_POLYS_SP/H_FIRE_PLY_polygon.shp")
 
 #What are trends like over time for total burned area? Calculate by year summary
 
 #yearly burned area summary
 h_fires_n_sp <- st_drop_geometry(h_fires)
 
+#exploratory plot
 h_fires_n_sp %>% group_by(FIRE_YEAR) %>% summarize(total_burned_area_year_ha = sum(AREA_SQM)/10000) %>%
   ggplot(aes(x=FIRE_YEAR, y=total_burned_area_year_ha)) +
   geom_col(stat = 'identity')
@@ -115,7 +116,7 @@ gt(top_10_h_fires) %>% tab_header(title = md("**BC Wildfire Burned Area**"), sub
   )
 
 #current year data https://pub.data.gov.bc.ca/datasets/cdfc2d7b-c046-4bf0-90ac-4897232619e1/
-cur_fire <- read_sf('./Sept2026/prot_current_fire_polys/prot_current_fire_polys.shp')
+cur_fire <- read_sf('./prot_current_fire_polys/prot_current_fire_polys.shp')
 sum(cur_fire$FIRE_SZ_HA)
 
 x <- h_fires_n_sp %>% mutate(grouped_year = round(FIRE_YEAR/5)*5) %>% 
