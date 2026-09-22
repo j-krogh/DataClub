@@ -49,9 +49,9 @@ p2 <- h_fires_n_sp %>%
   summarize(total_burned_area_year_ha = (sum(AREA_SQM)/(10000 * 1e6))) %>%
   ggplot(aes(x=FIRE_YEAR, y=total_burned_area_year_ha, fill = FIRE_CAUSE)) +
   geom_col(stat = 'identity') +
-  labs(y = "Burned Area (million ha)", x = "", title = "Annual Burned Area in BC",
-       caption = "Data averaged over five year periods.\n
-       Source: BC Wildfire Fire Perimeters - Historical published by the BC Wildfire Service") +
+  labs(y = "Burned Area (million ha)", x = "", 
+       title = "Annual Burned Area in BC",
+       caption = "Source: BC Wildfire Fire Perimeters - Historical published by the BC Wildfire Service") +
   scale_fill_manual(values = c("Lightning" = "#006BA2", "Person" = "#379A8B", "Unknown" = "#758D99")) +
   theme_economist() +
   theme(legend.title = element_blank(), legend.position = "bottom",
@@ -62,28 +62,65 @@ p2 <- h_fires_n_sp %>%
 ggsave("./Sept2026/annual_burn_area.png",p2)
 
 #Size of fires over time
-h_fires_n_sp %>% filter(FIRE_CAUSE != "Unknown") %>% 
+p3 <- h_fires_n_sp %>% filter(FIRE_CAUSE != "Unknown") %>% 
   group_by(FIRE_YEAR, FIRE_CAUSE) %>% 
   summarize(p90 = quantile(SIZE_HA, 0.9, na.rm = T), p50 = quantile(SIZE_HA, 0.5, na.rm = T), p10 = quantile(SIZE_HA, 0.1, na.rm = T)) %>%
   ggplot(aes(x=FIRE_YEAR, y=p50, colour = FIRE_CAUSE)) +
   geom_point() +
-  geom_smooth()
+  geom_smooth() +
+  labs(x = "",
+       y = "Median Fire Size (Ha)",
+       title = "Median Size of Wildfires",
+       caption = "Source: BC Wildfire Fire Perimeters - Historical published by the BC Wildfire Service") +
+  scale_colour_manual(values = c("Lightning" = "#006BA2", "Person" = "#379A8B", "Unknown" = "#758D99")) +
+  theme_economist() +
+  theme(legend.title = element_blank(), legend.position = "bottom",
+        legend.text = element_text(size = 12),
+        legend.key.size = unit(0.25, "cm")) +
+  scale_x_continuous(expand = c(0.01,0.01))
+
+ggsave("median_fire_size.png",p3)
 
 #mean fire size
-h_fires_n_sp %>% filter(FIRE_CAUSE != "Unknown") %>% 
+p4 <- h_fires_n_sp %>% filter(FIRE_CAUSE != "Unknown") %>% 
   group_by(FIRE_YEAR, FIRE_CAUSE) %>% 
   summarize(avg_fire_size = mean(SIZE_HA, na.rm = T)) %>%
   ggplot(aes(x=FIRE_YEAR, y=avg_fire_size, colour = FIRE_CAUSE)) +
   geom_point() +
-  geom_smooth()
+  geom_smooth() +
+  labs(x = "",
+       y = "Average Fire Size (Ha)",
+       title = "Average Size of Wildfires",
+       caption = "Source: BC Wildfire Fire Perimeters - Historical published by the BC Wildfire Service") +
+  scale_colour_manual(values = c("Lightning" = "#006BA2", "Person" = "#379A8B", "Unknown" = "#758D99")) +
+  theme_economist() +
+  theme(legend.title = element_blank(), legend.position = "bottom",
+        legend.text = element_text(size = 12),
+        legend.key.size = unit(0.25, "cm")) +
+  scale_x_continuous(expand = c(0.01,0.01))
+
+ggsave("average_fire_size.png",p4)
 
 #Total count of fires
-h_fires_n_sp %>% 
+p5 <- h_fires_n_sp %>% 
   group_by(FIRE_YEAR, FIRE_CAUSE) %>% 
   summarize(num_fires_year = n()) %>%
   ggplot(aes(x=FIRE_YEAR, y=num_fires_year, colour = FIRE_CAUSE)) +
   geom_point() + 
-  geom_smooth()
+  geom_smooth() +
+  labs(x = "",
+       y = "Number of Fires",
+       title = "Total Number of Wildfires",
+       caption = "Source: BC Wildfire Fire Perimeters - Historical published by the BC Wildfire Service") +
+  scale_colour_manual(values = c("Lightning" = "#006BA2", "Person" = "#379A8B", "Unknown" = "#758D99")) +
+  theme_economist() +
+  theme(legend.title = element_blank(), legend.position = "bottom",
+        legend.text = element_text(size = 12),
+        legend.key.size = unit(0.25, "cm")) +
+  scale_x_continuous(expand = c(0.01,0.01))
+
+ggsave("total_number_fire.png",p5)
+
 
 #Make a leader board of years with the most burned area top 10
 top_10_h_fires <- h_fires_n_sp %>% group_by(FIRE_YEAR) %>% summarize(total_burned_area_year_ha = (sum(AREA_SQM)/(10000 * 1e6))) %>%
@@ -116,8 +153,14 @@ gt(top_10_h_fires) %>% tab_header(title = md("**BC Wildfire Burned Area**"), sub
   )
 
 #current year data https://pub.data.gov.bc.ca/datasets/cdfc2d7b-c046-4bf0-90ac-4897232619e1/
-cur_fire <- read_sf('./prot_current_fire_polys/prot_current_fire_polys.shp')
-sum(cur_fire$FIRE_SZ_HA)
+cur_fire <- read_sf('./PROT_CURRENT_FIRE_POLYS_SP/C_FIRE_PLY_polygon.shp')
+sum(cur_fire$SIZE_HA)/1e6
+
+#2026 305 fires in total
+#0.43 million ha burned
+#
+
+
 
 x <- h_fires_n_sp %>% mutate(grouped_year = round(FIRE_YEAR/5)*5) %>% 
   group_by(grouped_year) %>% 
